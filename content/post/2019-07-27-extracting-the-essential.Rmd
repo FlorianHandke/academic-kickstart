@@ -22,9 +22,9 @@ image:
 projects: []
 ---
 
-Reading large texts takes time. Sometimes it would be useful to extract essential sentences of a text to get a first impression of the whole.
+Reading large texts takes time. Sometimes it would be useful to extract essential sentences of a text to get a first impression of the whole. Therefore we will scrap a text from the web, do some string manipulation, tokenize it and finally extract the most important sentences by using Google Pagerank algorithm. 
 
-To extract the essential I wil use the following R packages
+To do so I will use the following R packages
 
  * `rvest`
  
@@ -34,7 +34,7 @@ To extract the essential I wil use the following R packages
  
  * `textrank`
  
-In our example, we will use a text [The Bureau of investegative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
+In our example, we will use a text of the [The Bureau of investegative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
 
 You can find the full article [here](https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms).
 
@@ -44,9 +44,9 @@ To scrape the text from the website we will use the [rvest](https://cran.r-proje
 library(rvest)
 ```
 
-To scrape the data we simply define the relevant URL a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose `p` as our relevant node. The [p](https://html.com/tags/p/#ixzz5utCwr0gg) element is used to identify blocks of paragraph text.
+Scraping the data we simply define the relevant URLand a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose `p` as our relevant node. The [p](https://html.com/tags/p/#ixzz5utCwr0gg) element is used to identify blocks of paragraph text in HTML.
 
-There is a wide variity of nodes we can define but do not need in this context. For exmaple we cld scrape tables, rating, pictures ...
+There is a wide variity of nodes we can define but do not need in this context. For exmaple we could scrape tables, rating, pictures and so on. 
 
 ```{r scraping the text}
 url <- 'https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms'
@@ -119,9 +119,9 @@ If you are interested in more details please read the [paper](https://web.eecs.u
 library(textrank)
 ```
 
-Textrank needs a a dataframe with sentences and a dataframe with words which are part of these sentences.
+Textrank needs a dataframe with sentences and a dataframe with words which are part of these sentences.
 
-Here we only take nouns and adjectives to for finding overlaps between sentences.
+Here we only take nouns and adjectives for finding overlaps between sentences.
 
 ```{r}
 df_text$textrank_id <- unique_identifier(df_text, c("doc_id", "paragraph_id", "sentence_id"))
@@ -137,7 +137,7 @@ By applying our sentences and terminology into `textrank_sentences()` they will 
 textrank <- textrank_sentences(data = sentences, terminology = terminology)
 ```
 
-We can now extract the top n most relevant sentences where n defines the number of sentences which shold be mentioned.
+We can now extract the top n most relevant sentences where n defines the number of sentences which should be mentioned.
 
 ```{r}
 important_sentences <- summary(textrank, 
