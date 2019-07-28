@@ -111,7 +111,7 @@ To find the most important senteces we will use a graph based ranking model by u
 
 Textrank constructs a graph where "the verticles of a the graph represent each sentence in our text and the edges between sentences are based on content overlap, namely by calculating the number of words that two sentences have in common."
 
-Textrank then uses [PageRank](https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm) to identify the most important sentences of a text. PageRank is also used by Google Search to rank web pages.
+It then uses [PageRank](https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm) to identify the most important sentences of a text. PageRank was also used by Google Search to rank web pages till 2013. After 2013 Google used Hummingbird where Pagerank is only one of many criterias.
 
 If you are interested in more details please read the [paper](https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf).
 

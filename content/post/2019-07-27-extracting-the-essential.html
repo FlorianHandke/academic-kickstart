@@ -91,7 +91,7 @@ head(df_text)</code></pre>
 ## 6             4 acl:relcl &lt;NA&gt; SpacesAfter=\\n</code></pre>
 <p>To find the most important senteces we will use a graph based ranking model by using an unsupervised method.</p>
 <p>Textrank constructs a graph where “the verticles of a the graph represent each sentence in our text and the edges between sentences are based on content overlap, namely by calculating the number of words that two sentences have in common.”</p>
-<p>Textrank then uses <a href="https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm">PageRank</a> to identify the most important sentences of a text. PageRank is also used by Google Search to rank web pages.</p>
+<p>It then uses <a href="https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm">PageRank</a> to identify the most important sentences of a text. PageRank was also used by Google Search to rank web pages till 2013. After 2013 Google used Hummingbird where Pagerank is only one of many criterias.</p>
 <p>If you are interested in more details please read the <a href="https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">paper</a>.</p>
 <pre class="r"><code>library(textrank)</code></pre>
 <p>Textrank needs a dataframe with sentences and a dataframe with words which are part of these sentences.</p>
