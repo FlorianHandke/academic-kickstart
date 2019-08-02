@@ -1,24 +1,21 @@
 ---
-title: Extracting the essential (with a shiny app)
+title: Extracting the essential with shiny
 author: Florian Handke
-date: '2019-08-02'
-slug: extracting-the-essential-shiny
-categories:
+date: '2019-08-03'
+slug: extracting-the-essential-with-shiny
+categories: []
+tags:
   - shiny
-  - textrank
-  - Webapp
-tags: 
-  - rvest
-  - udpipe
-  - textrank
-  - Pagerank
   - Natural language processing
-  - shiny
+  - Pagerank
+  - rvest
+  - textrank
+  - udpipe
   - Webapp
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2019-08-02T22:34:40+02:00'
+lastmod: '2019-08-03T00:16:50+02:00'
 featured: no
 image:
   caption: ''
@@ -26,6 +23,7 @@ image:
   preview_only: no
 projects: []
 ---
+
 
 This week I told Oliver about my first blog post. He said if it wasn't also possible for him to examine any text according to the principle that I showed in my July 27 post. 
 
