@@ -1,5 +1,5 @@
 ---
-title: Extracting the essential [Vol. 2]
+title: Extracting the essential (with a shiny app)
 author: Florian Handke
 date: '2019-08-02'
 slug: extracting-the-essential-vol-2
