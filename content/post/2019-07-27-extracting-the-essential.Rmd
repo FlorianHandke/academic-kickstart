@@ -34,7 +34,7 @@ To do so I will use the following R packages
  
  * `textrank`
  
-In our example, we will use a text of the [The Bureau of investegative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
+In our example, we will use a text of the [The Bureau of investigative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in Indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
 
 You can find the full article [here](https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms).
 

@@ -19,7 +19,7 @@ date_format = "Jan 2006"
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 [[experience]]
   title = "Data Scientist"
-  company = "Trump Laser GmbH"
+  company = "Trumpf Laser GmbH"
   company_url = "https://www.trumpf.com"
   location = "Schramberg - Baden-Wuerttemberg"
   date_start = "2018-04-15"
