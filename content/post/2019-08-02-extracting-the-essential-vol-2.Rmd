@@ -2,7 +2,7 @@
 title: Extracting the essential (with a shiny app)
 author: Florian Handke
 date: '2019-08-02'
-slug: extracting-the-essential-vol-2
+slug: extracting-the-essential-shiny
 categories:
   - shiny
   - textrank
@@ -53,7 +53,7 @@ Shiny apps are usually split in two:
 
 Our UI will have a fairly simple structure. It is divided into a sidebar panel where the user makes his input and a main panel where the result is displayed. 
 
-```{r define ui, message=FALSE, warning=FALSE}
+```{r define ui, message=FALSE, warning=FALSE, eval = FALSE}
 # Define UI for our application 
 ui <- fluidPage(
    
@@ -158,7 +158,7 @@ server <- function(input, output) {
 
 The final app is called inside R via *shinyApp()* with the components from ui and server.
 
-```{r, eval = FALSE, message=FALSE, warning=FALSE}
+```{r, eval = FALSE, message=FALSE, warning=FALSE, eval=FALSE}
 # Run the application 
 shinyApp(ui = ui, server = server)
 ```
@@ -169,7 +169,7 @@ The full procedure for hosting the app on shinyapps.io can be found in the clear
 
 1. First we load the [rsconnect](https://github.com/rstudio/rsconnect) package
 
-```{r load rsconnect, message=FALSE, warning=FALSE}
+```{r load rsconnect, message=FALSE, warning=FALSE, eval = FALSE}
 library(rsconnect)
 ```
 
