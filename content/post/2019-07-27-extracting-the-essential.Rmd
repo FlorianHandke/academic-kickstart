@@ -44,9 +44,9 @@ To scrape the text from the website we will use the [rvest](https://cran.r-proje
 library(rvest)
 ```
 
-Scraping the data we simply define the relevant URLand a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose `p` as our relevant node. The [p](https://html.com/tags/p/#ixzz5utCwr0gg) element is used to identify blocks of paragraph text in HTML.
+Scraping the data we simply define the relevant URL and a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose `p` as our relevant node. The [p](https://html.com/tags/p/#ixzz5utCwr0gg) element is used to identify blocks of paragraph text in HTML.
 
-There is a wide variity of nodes we can define but do not need in this context. For exmaple we could scrape tables, rating, pictures and so on. 
+There is a wide variety of nodes we can define but do not need in this context. For exmaple we could scrape tables, rating, pictures and so on. 
 
 ```{r scraping the text}
 url <- 'https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms'
@@ -115,11 +115,11 @@ It then uses [PageRank](https://www.cs.princeton.edu/~chazelle/courses/BIB/pager
 
 If you are interested in more details please read the [paper](https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf).
 
+"[TextRank](https://cran.r-project.org/web/packages/textrank/vignettes/textrank.html) – is a graph-based ranking model for text processing" . It needs a dataframe with sentences and a dataframe with words which are part of these sentences.
+
 ```{r loading textrank, warning=FALSE, message=FALSE}
 library(textrank)
 ```
-
-Textrank needs a dataframe with sentences and a dataframe with words which are part of these sentences.
 
 Here we only take nouns and adjectives for finding overlaps between sentences.
 
