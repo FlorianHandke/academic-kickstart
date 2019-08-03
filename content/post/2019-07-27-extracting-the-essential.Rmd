@@ -34,7 +34,7 @@ To do so I will use the following R packages
  
  * `textrank`
  
-In our example, we will use a text of the [The Bureau of investigative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in Indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
+In our example, we will use a text of the [The Bureau of investegative journalism](https://www.thebureauinvestigates.com/) by [Madlen Davies](https://www.thebureauinvestigates.com/profile/madlendavies) and [Ben Stockton](https://www.thebureauinvestigates.com/profile/Benstockton) from July 22 2019. The article describes the ban of a antibioticum in Indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world's growing antibiotic resistance crisis.
 
 You can find the full article [here](https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms).
 
@@ -111,15 +111,15 @@ To find the most important senteces we will use a graph based ranking model by u
 
 Textrank constructs a graph where "the verticles of a the graph represent each sentence in our text and the edges between sentences are based on content overlap, namely by calculating the number of words that two sentences have in common."
 
-It then uses [PageRank](https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm) to identify the most important sentences of a text. PageRank was also used by Google Search to rank web pages till 2013. After 2013 Google used Hummingbird where Pagerank is only one of many criterias.
+Textrank then uses [PageRank](https://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm) to identify the most important sentences of a text. PageRank is also used by Google Search to rank web pages.
 
 If you are interested in more details please read the [paper](https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf).
-
-"[TextRank](https://cran.r-project.org/web/packages/textrank/vignettes/textrank.html) – is a graph-based ranking model for text processing" . It needs a dataframe with sentences and a dataframe with words which are part of these sentences.
 
 ```{r loading textrank, warning=FALSE, message=FALSE}
 library(textrank)
 ```
+
+Textrank needs a dataframe with sentences and a dataframe with words which are part of these sentences.
 
 Here we only take nouns and adjectives for finding overlaps between sentences.
 
