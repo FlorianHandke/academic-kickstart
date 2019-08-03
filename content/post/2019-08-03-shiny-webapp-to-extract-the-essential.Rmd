@@ -3,7 +3,7 @@ title: Shiny Webapp to extract the essential
 author: Florian Handke
 date: '2019-08-03'
 slug: shiny-webapp-to-extract-the-essential
-categories: []
+categories: ''
 tags:
   - shiny
   - Natural language processing
@@ -14,14 +14,14 @@ tags:
   - Webapp
 subtitle: ''
 summary: ''
-authors: []
+authors: ''
 lastmod: '2019-08-03T00:16:50+02:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
-projects: []
+projects: ''
 ---
 
 

@@ -47,6 +47,6 @@ subtitle = ""
  css_class = ""
 +++
 
-Welcome to the my blog!
+Welcome to my blog!
 
 This blog is under construction. In the future you will find here current projects in the area of Data Science.

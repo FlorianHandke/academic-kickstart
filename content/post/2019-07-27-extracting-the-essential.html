@@ -32,12 +32,12 @@ projects: []
 <li><p><code>udpipe</code></p></li>
 <li><p><code>textrank</code></p></li>
 </ul>
-<p>In our example, we will use a text of the <a href="https://www.thebureauinvestigates.com/">The Bureau of investegative journalism</a> by <a href="https://www.thebureauinvestigates.com/profile/madlendavies">Madlen Davies</a> and <a href="https://www.thebureauinvestigates.com/profile/Benstockton">Ben Stockton</a> from July 22 2019. The article describes the ban of a antibioticum in indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world’s growing antibiotic resistance crisis.</p>
+<p>In our example, we will use a text of the <a href="https://www.thebureauinvestigates.com/">The Bureau of investegative journalism</a> by <a href="https://www.thebureauinvestigates.com/profile/madlendavies">Madlen Davies</a> and <a href="https://www.thebureauinvestigates.com/profile/Benstockton">Ben Stockton</a> from July 22 2019. The article describes the ban of a antibioticum in Indian farms to fatten up animals. Fatten up animals is - according to the WHO - a major cause of the world’s growing antibiotic resistance crisis.</p>
 <p>You can find the full article <a href="https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms">here</a>.</p>
 <p>To scrape the text from the website we will use the <a href="https://cran.r-project.org/web/packages/rvest/rvest.pdf">rvest</a> package which makes it easy to get all the data we want. It also provides assistance to use pipes from the <a href="https://magrittr.tidyverse.org/">magrittr</a> package which is always a good choice. :)</p>
 <pre class="r"><code>library(rvest)</code></pre>
-<p>Scraping the data we simply define the relevant URLand a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose <code>p</code> as our relevant node. The <a href="https://html.com/tags/p/#ixzz5utCwr0gg">p</a> element is used to identify blocks of paragraph text in HTML.</p>
-<p>There is a wide variity of nodes we can define but do not need in this context. For exmaple we could scrape tables, rating, pictures and so on.</p>
+<p>Scraping the data we simply define the relevant URL and a node which indicates a corresponding CSS selector. Because we only want the text of our article, we choose <code>p</code> as our relevant node. The <a href="https://html.com/tags/p/#ixzz5utCwr0gg">p</a> element is used to identify blocks of paragraph text in HTML.</p>
+<p>There is a wide variety of nodes we can define but do not need in this context. For exmaple we could scrape tables, rating, pictures and so on.</p>
 <pre class="r"><code>url &lt;- &#39;https://www.thebureauinvestigates.com/stories/2019-07-22/india-bans-use-of-last-hope-antibiotic-colistin-on-farms&#39;
 
 webpage &lt;- read_html(url)
