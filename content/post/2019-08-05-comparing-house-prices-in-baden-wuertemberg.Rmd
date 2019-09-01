@@ -1,0 +1,195 @@
+---
+title: Comparing house prices in Baden Wuertemberg
+subtitle: Part 1 -  Downloading the data
+author: Florian Handke
+date: '2019-09-1'
+slug: comparing-house-prices-in-baden-wuertemberg
+categories: []
+tags:
+  - rvest
+  - purrr
+  - scraping
+---
+
+The price of houses is widely discussed these days in germany:
+
+Real estate prices have risen nationwide in recent years. This is also shown by the present house price index of the Federal Statistical Office, which, starting from 2015 (index = 100), was around 116.3 points in 2018. Thus, prices have increased by 16.3 percent compared to the base year 2015. Nevertheless, there are regional differences in the development of real estate prices. [statista](https://de.statista.com/statistik/daten/studie/70265/umfrage/haeuserpreisindex-in-deutschland-seit-2000/)
+
+Houses are becoming more expensive almost everywhere in Europe - especially in Germany. This was calculated by Eurostat, the European Statistics Office. While in the euro zone prices for residential buildings rose by 4.5 percent in the first quarter, the figure in Germany was as high as 5.3 percent. In the EU as a whole, an average of 4.7 percent more had to be paid for a house than in the first quarter of 2017.
+[handelsblatt](https://www.handelsblatt.com/finanzen/immobilien/europaeischer-vergleich-hauspreise-in-deutschland-ueberdurchschnittlich-stark-gestiegen/22788824.html?ticket=ST-6190196-5Wioef2UO3o6HZwheSC6-ap1)
+
+Since I live in Baden-Wuerttemberg, I am mainly interested in the regional house price:
+
+ + What is the gradient of the city/country?
+ 
+ + Where are the houses cheapest per square meter?
+ 
+ + Where are the most expensive houses?
+
+I will shed light on all these factors in the coming blog posts. For this I want to examine house prices of the real estate portal (Immobilienscout)[https://www.immobilienscout24.de/].
+
+In my first post I will create the data basis for further analyses. For this purpose, I will obtain the data in R by means of webscraping. As already in my previous posts the R parcel rvest will be used.
+
+In further posts I will then examine the data further.
+
+Immobilienscout enables you to search for real estate on the basis of the respective county. In the first step all counties of Baden Würtemberg are needed.
+
+A useful tool for this is the R package datapasta. In our case we can copy the relevant counties from any website and make them available as R vectors with datapasta::vector_paste(). The result is a vector named Counties_BW.
+
+
+```{r, warning = FALSE, message = FALSE}
+Counties_BW <- c("Alb-Donau", "Biberach", "Bodenseekreis", "Boeblingen", "Breisgau-Hochschwarzwald", "Calw", "Emmendingen", "Enzkreis", "Esslingen", "Freudenstadt", "Goeppingen", "Heidenheim", "Heilbronn", "Hohenlohekreis", "Karlsruhe", "Konstanz", "Loerrach", "Ludwigsburg", "Main-Tauber", "Neckar-Odenwald", "Ortenaukreis", "Ostalbkreis", "Rastatt", "Ravensburg", "Rems-Murr-Kreis", "Reutlingen", "Rhein-Neckar", "Rottweil", "Schwarzwald-Baar", "Schwaebisch-Hall", "Sigmaringen", "Tuebingen", "Tuttlingen", "Waldshut", "Zollernalbkreis") 
+
+```
+
+To scrapn the data, we will use a few packages with useful functions:
+
+ * **rvest** to scrape the data from the website
+ 
+ * **tidyverse** which includes magrittr (piping), stringr (string manipulation), dplyr (data wraggling), purrr (calling functions)...
+ 
+ * **glue** to glue strings :)
+
+```{r, warning = FALSE, message = FALSE}
+library(rvest)
+library(tidyverse)
+library(glue)
+```
+
+## Helper Functions
+
+The package purrr allows us to call functions within a dataframe and pass arguments to them. In this case we do not really need it, but i love working with it...
+
+To get the data I built two auxiliary functions. 
+
+The first helper function should perform the following tasks:
+
+ * Determination of the existing pages for a county
+
+ * Scraping of the data
+ 
+Due to inconsistent data we need a second helper function (SplitIt). This function checks individual arguments and merges them into a tibble. Missing arguments are replaced by an NA.
+
+```{r helper functions, warning = FALSE, message = FALSE}
+
+## First helper function
+
+CollectHousingData <- function(County) {
+  
+  ## To get to our landing page we simulate our first page argument with 1
+  
+  page <- 1
+  
+  ## Square brackets in our string indicate a argument which can be filled by glue 
+  
+  url <- paste0("https://www.immobilienscout24.de/Suche/S-T/P-{page}/Haus-Kauf/Baden-Wuerttemberg/{County}",
+                ifelse(str_detect(County, "kreis|Kreis"), "", "-Kreis"))
+  
+  ## glue the url to get pagination
+  
+  startpage <- read_html(glue(url))
+  
+  pagination <- startpage %>% 
+    html_nodes(".select.font-standard > option") %>% 
+    html_text() %>% 
+    as.numeric() %>% 
+    .[!is.na(.)]
+  
+  CountyResult <- tibble()
+  
+  ## Looping over all pages
+  
+  for (i in seq_along(pagination)) {
+    
+    page <- i
+    
+    ## glue the url for a single page
+    
+    singlepage <- read_html(glue(url))
+    
+    ## Predefining the relevant node
+    
+    first_lvl_node <- singlepage %>% 
+      html_nodes(paste0(".listings-content-area > .react > ",
+                        "div > div > ul > li > div > article > ",
+                        "div:nth-of-type(1) > div:nth-of-type(2)"))
+    
+    ## Creating the Result for one page
+    
+    PageResult <- 
+      tibble(Title = first_lvl_node %>% 
+               html_nodes(paste0("div > a > h5")) %>% 
+               html_text(),
+             Location = first_lvl_node %>% 
+               html_nodes(paste0("div > div:nth-of-type(2) > div > button")) %>% 
+               html_text(),
+             RestData = first_lvl_node %>% 
+               html_nodes("div > div:nth-of-type(3) > div > div:nth-of-type(1)") %>% 
+               html_text()) %>% 
+      mutate(RestData = str_replace(RestData,"Wohnfläche", "Wohnflaeche"), ## stringr does not recognize umlauts
+             RestData = str_replace(RestData,"Grundstück", "Grundstueck"),
+             SplitString = map(RestData, SplitIt)) %>% 
+      unnest() %>% 
+      select(-RestData)
+    
+    ## Combing all results
+    
+    CountyResult <- CountyResult %>% 
+      bind_rows(PageResult)
+    
+  }
+  
+  return(CountyResult)
+  
+}
+
+## Second helper function
+## Price, LivingArea, Rooms, and SiteArea are no necessary arguments. therefore we need to check if they are existant.
+
+SplitIt <- function(string) {
+  
+  ## Splitting the string into the different arguments
+  
+  string_split <- unlist(str_split(string, "(?<=Kaufpreis|Wohnflaeche|Zi.)"))
+  
+  ## Combine everything to a tibble. If the argument is missing fill a NA. Afterwards replace the name with ""
+  
+  tibble(Price = ifelse(any(str_detect(string_split, "Kaufpreis")),
+                        string_split[str_detect(string_split, "Kaufpreis")],
+                        NA) %>% str_replace("Kaufpreis", ""),
+         LivingArea = ifelse(any(str_detect(string_split, "Wohnflaeche")),
+                             string_split[str_detect(string_split, "Wohnflaeche")],
+                             NA) %>% str_replace("Wohnflaeche", ""),
+         Rooms = ifelse(any(str_detect(string_split, "Zi.")),
+                        first(string_split[str_detect(string_split, "Zi.")]),
+                        NA) %>% str_replace("Zi.", ""),
+         SiteArea = ifelse(any(str_detect(string_split, "Grundstueck")),
+                           string_split[str_detect(string_split, "Grundstueck")],
+                           NA) %>% str_replace("Grundstueck", ""))
+  
+}
+```
+
+## Executing the helper functions
+
+The input data (counties) are saved as tibble for further processing. Then they can be passed to the help function via purrr::map(). The auxiliary function then returns data as tibble. These data are nested and can be "unpacked" with the function tidyr:.unnest().
+
+
+```{r, warning = FALSE, message = FALSE}
+Counties_nested <- tibble(County = Counties_BW) %>% 
+  mutate(HouseData = map(County, possibly(CollectHousingData, NA))) 
+
+head(Counties_nested)
+```
+
+```{r, warning = FALSE, message = FALSE}
+
+Counties_unnested <- Counties_nested %>% 
+  unnest()
+
+head(Counties_unnested)
+```
+
+Our result contains `r nrow(Counties_unnested)` rows which is equivalent to the houses sold via Immobilienscout.
+
+In my next post I will examine the data more closely and perform a desriptive analysis. 

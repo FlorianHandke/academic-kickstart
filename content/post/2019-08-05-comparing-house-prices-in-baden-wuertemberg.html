@@ -1,0 +1,178 @@
+---
+title: Comparing house prices in Baden Wuertemberg
+subtitle: Part 1 -  Downloading the data
+author: Florian Handke
+date: '2019-09-1'
+slug: comparing-house-prices-in-baden-wuertemberg
+categories: []
+tags:
+  - rvest
+  - purrr
+  - scraping
+---
+
+
+
+<p>The price of houses is widely discussed these days in germany:</p>
+<p>Real estate prices have risen nationwide in recent years. This is also shown by the present house price index of the Federal Statistical Office, which, starting from 2015 (index = 100), was around 116.3 points in 2018. Thus, prices have increased by 16.3 percent compared to the base year 2015. Nevertheless, there are regional differences in the development of real estate prices. <a href="https://de.statista.com/statistik/daten/studie/70265/umfrage/haeuserpreisindex-in-deutschland-seit-2000/">statista</a></p>
+<p>Houses are becoming more expensive almost everywhere in Europe - especially in Germany. This was calculated by Eurostat, the European Statistics Office. While in the euro zone prices for residential buildings rose by 4.5 percent in the first quarter, the figure in Germany was as high as 5.3 percent. In the EU as a whole, an average of 4.7 percent more had to be paid for a house than in the first quarter of 2017. <a href="https://www.handelsblatt.com/finanzen/immobilien/europaeischer-vergleich-hauspreise-in-deutschland-ueberdurchschnittlich-stark-gestiegen/22788824.html?ticket=ST-6190196-5Wioef2UO3o6HZwheSC6-ap1">handelsblatt</a></p>
+<p>Since I live in Baden-Wuerttemberg, I am mainly interested in the regional house price:</p>
+<ul>
+<li><p>What is the gradient of the city/country?</p></li>
+<li><p>Where are the houses cheapest per square meter?</p></li>
+<li><p>Where are the most expensive houses?</p></li>
+</ul>
+<p>I will shed light on all these factors in the coming blog posts. For this I want to examine house prices of the real estate portal (Immobilienscout)[<a href="https://www.immobilienscout24.de/" class="uri">https://www.immobilienscout24.de/</a>].</p>
+<p>In my first post I will create the data basis for further analyses. For this purpose, I will obtain the data in R by means of webscraping. As already in my previous posts the R parcel rvest will be used.</p>
+<p>In further posts I will then examine the data further.</p>
+<p>Immobilienscout enables you to search for real estate on the basis of the respective county. In the first step all counties of Baden Würtemberg are needed.</p>
+<p>A useful tool for this is the R package datapasta. In our case we can copy the relevant counties from any website and make them available as R vectors with datapasta::vector_paste(). The result is a vector named Counties_BW.</p>
+<pre class="r"><code>Counties_BW &lt;- c(&quot;Alb-Donau&quot;, &quot;Biberach&quot;, &quot;Bodenseekreis&quot;, &quot;Boeblingen&quot;, &quot;Breisgau-Hochschwarzwald&quot;, &quot;Calw&quot;, &quot;Emmendingen&quot;, &quot;Enzkreis&quot;, &quot;Esslingen&quot;, &quot;Freudenstadt&quot;, &quot;Goeppingen&quot;, &quot;Heidenheim&quot;, &quot;Heilbronn&quot;, &quot;Hohenlohekreis&quot;, &quot;Karlsruhe&quot;, &quot;Konstanz&quot;, &quot;Loerrach&quot;, &quot;Ludwigsburg&quot;, &quot;Main-Tauber&quot;, &quot;Neckar-Odenwald&quot;, &quot;Ortenaukreis&quot;, &quot;Ostalbkreis&quot;, &quot;Rastatt&quot;, &quot;Ravensburg&quot;, &quot;Rems-Murr-Kreis&quot;, &quot;Reutlingen&quot;, &quot;Rhein-Neckar&quot;, &quot;Rottweil&quot;, &quot;Schwarzwald-Baar&quot;, &quot;Schwaebisch-Hall&quot;, &quot;Sigmaringen&quot;, &quot;Tuebingen&quot;, &quot;Tuttlingen&quot;, &quot;Waldshut&quot;, &quot;Zollernalbkreis&quot;) </code></pre>
+<p>To scrapn the data, we will use a few packages with useful functions:</p>
+<ul>
+<li><p><strong>rvest</strong> to scrape the data from the website</p></li>
+<li><p><strong>tidyverse</strong> which includes magrittr (piping), stringr (string manipulation), dplyr (data wraggling), purrr (calling functions)…</p></li>
+<li><p><strong>glue</strong> to glue strings :)</p></li>
+</ul>
+<pre class="r"><code>library(rvest)
+library(tidyverse)
+library(glue)</code></pre>
+<div id="helper-functions" class="section level2">
+<h2>Helper Functions</h2>
+<p>The package purrr allows us to call functions within a dataframe and pass arguments to them. In this case we do not really need it, but i love working with it…</p>
+<p>To get the data I built two auxiliary functions.</p>
+<p>The first helper function should perform the following tasks:</p>
+<ul>
+<li><p>Determination of the existing pages for a county</p></li>
+<li><p>Scraping of the data</p></li>
+</ul>
+<p>Due to inconsistent data we need a second helper function (SplitIt). This function checks individual arguments and merges them into a tibble. Missing arguments are replaced by an NA.</p>
+<pre class="r"><code>## First helper function
+
+CollectHousingData &lt;- function(County) {
+  
+  ## To get to our landing page we simulate our first page argument with 1
+  
+  page &lt;- 1
+  
+  ## Square brackets in our string indicate a argument which can be filled by glue 
+  
+  url &lt;- paste0(&quot;https://www.immobilienscout24.de/Suche/S-T/P-{page}/Haus-Kauf/Baden-Wuerttemberg/{County}&quot;,
+                ifelse(str_detect(County, &quot;kreis|Kreis&quot;), &quot;&quot;, &quot;-Kreis&quot;))
+  
+  ## glue the url to get pagination
+  
+  startpage &lt;- read_html(glue(url))
+  
+  pagination &lt;- startpage %&gt;% 
+    html_nodes(&quot;.select.font-standard &gt; option&quot;) %&gt;% 
+    html_text() %&gt;% 
+    as.numeric() %&gt;% 
+    .[!is.na(.)]
+  
+  CountyResult &lt;- tibble()
+  
+  ## Looping over all pages
+  
+  for (i in seq_along(pagination)) {
+    
+    page &lt;- i
+    
+    ## glue the url for a single page
+    
+    singlepage &lt;- read_html(glue(url))
+    
+    ## Predefining the relevant node
+    
+    first_lvl_node &lt;- singlepage %&gt;% 
+      html_nodes(paste0(&quot;.listings-content-area &gt; .react &gt; &quot;,
+                        &quot;div &gt; div &gt; ul &gt; li &gt; div &gt; article &gt; &quot;,
+                        &quot;div:nth-of-type(1) &gt; div:nth-of-type(2)&quot;))
+    
+    ## Creating the Result for one page
+    
+    PageResult &lt;- 
+      tibble(Title = first_lvl_node %&gt;% 
+               html_nodes(paste0(&quot;div &gt; a &gt; h5&quot;)) %&gt;% 
+               html_text(),
+             Location = first_lvl_node %&gt;% 
+               html_nodes(paste0(&quot;div &gt; div:nth-of-type(2) &gt; div &gt; button&quot;)) %&gt;% 
+               html_text(),
+             RestData = first_lvl_node %&gt;% 
+               html_nodes(&quot;div &gt; div:nth-of-type(3) &gt; div &gt; div:nth-of-type(1)&quot;) %&gt;% 
+               html_text()) %&gt;% 
+      mutate(RestData = str_replace(RestData,&quot;Wohnfläche&quot;, &quot;Wohnflaeche&quot;), ## stringr does not recognize umlauts
+             RestData = str_replace(RestData,&quot;Grundstück&quot;, &quot;Grundstueck&quot;),
+             SplitString = map(RestData, SplitIt)) %&gt;% 
+      unnest() %&gt;% 
+      select(-RestData)
+    
+    ## Combing all results
+    
+    CountyResult &lt;- CountyResult %&gt;% 
+      bind_rows(PageResult)
+    
+  }
+  
+  return(CountyResult)
+  
+}
+
+## Second helper function
+## Price, LivingArea, Rooms, and SiteArea are no necessary arguments. therefore we need to check if they are existant.
+
+SplitIt &lt;- function(string) {
+  
+  ## Splitting the string into the different arguments
+  
+  string_split &lt;- unlist(str_split(string, &quot;(?&lt;=Kaufpreis|Wohnflaeche|Zi.)&quot;))
+  
+  ## Combine everything to a tibble. If the argument is missing fill a NA. Afterwards replace the name with &quot;&quot;
+  
+  tibble(Price = ifelse(any(str_detect(string_split, &quot;Kaufpreis&quot;)),
+                        string_split[str_detect(string_split, &quot;Kaufpreis&quot;)],
+                        NA) %&gt;% str_replace(&quot;Kaufpreis&quot;, &quot;&quot;),
+         LivingArea = ifelse(any(str_detect(string_split, &quot;Wohnflaeche&quot;)),
+                             string_split[str_detect(string_split, &quot;Wohnflaeche&quot;)],
+                             NA) %&gt;% str_replace(&quot;Wohnflaeche&quot;, &quot;&quot;),
+         Rooms = ifelse(any(str_detect(string_split, &quot;Zi.&quot;)),
+                        first(string_split[str_detect(string_split, &quot;Zi.&quot;)]),
+                        NA) %&gt;% str_replace(&quot;Zi.&quot;, &quot;&quot;),
+         SiteArea = ifelse(any(str_detect(string_split, &quot;Grundstueck&quot;)),
+                           string_split[str_detect(string_split, &quot;Grundstueck&quot;)],
+                           NA) %&gt;% str_replace(&quot;Grundstueck&quot;, &quot;&quot;))
+  
+}</code></pre>
+</div>
+<div id="executing-the-helper-functions" class="section level2">
+<h2>Executing the helper functions</h2>
+<p>The input data (counties) are saved as tibble for further processing. Then they can be passed to the help function via purrr::map(). The auxiliary function then returns data as tibble. These data are nested and can be “unpacked” with the function tidyr:.unnest().</p>
+<pre class="r"><code>Counties_nested &lt;- tibble(County = Counties_BW) %&gt;% 
+  mutate(HouseData = map(County, possibly(CollectHousingData, NA))) 
+
+head(Counties_nested)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   County                   HouseData         
+##   &lt;chr&gt;                    &lt;list&gt;            
+## 1 Alb-Donau                &lt;tibble [98 x 6]&gt; 
+## 2 Biberach                 &lt;tibble [102 x 6]&gt;
+## 3 Bodenseekreis            &lt;tibble [128 x 6]&gt;
+## 4 Boeblingen               &lt;tibble [161 x 6]&gt;
+## 5 Breisgau-Hochschwarzwald &lt;tibble [142 x 6]&gt;
+## 6 Calw                     &lt;tibble [141 x 6]&gt;</code></pre>
+<pre class="r"><code>Counties_unnested &lt;- Counties_nested %&gt;% 
+  unnest()
+
+head(Counties_unnested)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   County  Title              Location       Price LivingArea Rooms SiteArea
+##   &lt;chr&gt;   &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;   
+## 1 Alb-Do~ NEU//Schloss Dell~ Werdensteinst~ 870.~ 426 m²     &quot;25 &quot; 3.000 m²
+## 2 Alb-Do~ Architekten-Fachw~ Laichingen, A~ 749.~ 230 m²     &quot;6,5~ 1.029 m²
+## 3 Alb-Do~ Hochwertiges Einf~ Ehingen (Dona~ 519.~ 197 m²     &quot;7,5~ 875 m²  
+## 4 Alb-Do~ Wohn- und Geschäf~ Langenau, Alb~ 520.~ 212 m²     &quot;8 &quot;  377 m²  
+## 5 Alb-Do~ Modernes Einfamil~ Westerstetten~ 497.~ 166,17 m²  &quot;7 &quot;  761 m²  
+## 6 Alb-Do~ Großzügiges Wohnh~ Langenau, Alb~ 459.~ 237,53 m²  &quot;9 &quot;  380 m²</code></pre>
+<p>Our result contains 5385 rows which is equivalent to the houses sold via Immobilienscout.</p>
+<p>In my next post I will examine the data more closely and perform a desriptive analysis.</p>
+</div>
