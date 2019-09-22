@@ -154,12 +154,12 @@ head(Counties_nested)</code></pre>
 <pre><code>## # A tibble: 6 x 2
 ##   County                   HouseData         
 ##   &lt;chr&gt;                    &lt;list&gt;            
-## 1 Alb-Donau                &lt;tibble [98 x 6]&gt; 
-## 2 Biberach                 &lt;tibble [102 x 6]&gt;
-## 3 Bodenseekreis            &lt;tibble [128 x 6]&gt;
-## 4 Boeblingen               &lt;tibble [161 x 6]&gt;
-## 5 Breisgau-Hochschwarzwald &lt;tibble [142 x 6]&gt;
-## 6 Calw                     &lt;tibble [141 x 6]&gt;</code></pre>
+## 1 Alb-Donau                &lt;tibble [99 x 6]&gt; 
+## 2 Biberach                 &lt;tibble [100 x 6]&gt;
+## 3 Bodenseekreis            &lt;tibble [122 x 6]&gt;
+## 4 Boeblingen               &lt;tibble [178 x 6]&gt;
+## 5 Breisgau-Hochschwarzwald &lt;tibble [153 x 6]&gt;
+## 6 Calw                     &lt;tibble [139 x 6]&gt;</code></pre>
 <pre class="r"><code>Counties_unnested &lt;- Counties_nested %&gt;% 
   unnest()
 
@@ -167,12 +167,12 @@ head(Counties_unnested)</code></pre>
 <pre><code>## # A tibble: 6 x 7
 ##   County  Title              Location       Price LivingArea Rooms SiteArea
 ##   &lt;chr&gt;   &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;   
-## 1 Alb-Do~ NEU//Schloss Dell~ Werdensteinst~ 870.~ 426 m²     &quot;25 &quot; 3.000 m²
-## 2 Alb-Do~ Architekten-Fachw~ Laichingen, A~ 749.~ 230 m²     &quot;6,5~ 1.029 m²
-## 3 Alb-Do~ Hochwertiges Einf~ Ehingen (Dona~ 519.~ 197 m²     &quot;7,5~ 875 m²  
-## 4 Alb-Do~ Wohn- und Geschäf~ Langenau, Alb~ 520.~ 212 m²     &quot;8 &quot;  377 m²  
-## 5 Alb-Do~ Modernes Einfamil~ Westerstetten~ 497.~ 166,17 m²  &quot;7 &quot;  761 m²  
-## 6 Alb-Do~ Großzügiges Wohnh~ Langenau, Alb~ 459.~ 237,53 m²  &quot;9 &quot;  380 m²</code></pre>
-<p>Our result contains 5385 rows which is equivalent to the houses sold via Immobilienscout.</p>
+## 1 Alb-Do~ Traumhaus Fernbli~ Ehingen (Dona~ 519.~ 191 m²     &quot;8 &quot;  631 m²  
+## 2 Alb-Do~ NEU//Schloss Dell~ Werdensteinst~ 870.~ 426 m²     &quot;25 &quot; 3.000 m²
+## 3 Alb-Do~ Architekten-Fachw~ Laichingen, A~ 749.~ 230 m²     &quot;6,5~ 1.029 m²
+## 4 Alb-Do~ Hochwertiges Einf~ Ehingen (Dona~ 519.~ 197 m²     &quot;7,5~ 875 m²  
+## 5 Alb-Do~ Landvilla mit ang~ Bernstadt, Al~ 595.~ 237 m²     &quot;9 &quot;  867 m²  
+## 6 Alb-Do~ PROVISIONSFREI! -~ Illerrieden, ~ 679.~ 252,14 m²  &quot;7 &quot;  1.040 m²</code></pre>
+<p>Our result contains 5542 rows which is equivalent to the houses sold via Immobilienscout.</p>
 <p>In my next post I will examine the data more closely and perform a desriptive analysis.</p>
 </div>
