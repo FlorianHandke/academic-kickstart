@@ -49,4 +49,4 @@ subtitle = ""
 
 Welcome to my blog!
 
-This blog is under construction. In the future you will find here current projects in the area of Data Science.
+In my spare time I try to write here from time to time about topics which interest me. Take a look around and write me if you are interested.

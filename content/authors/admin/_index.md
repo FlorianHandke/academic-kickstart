@@ -18,12 +18,12 @@ organizations:
   url: "https://www.trumpf.com"
 
 # Short bio (displayed in user profile at end of posts)
-bio: Investigating the interesting.
+bio: What is there to discover?
 
 interests:
-- Artificial Intelligence
 - Predictive Analytics 
 - Time series forecasting
+- Visualization
 
 education:
   courses:
