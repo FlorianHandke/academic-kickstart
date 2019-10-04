@@ -1,0 +1,82 @@
+---
+title: Going spatial
+author: Florian Handke
+date: '2019-09-23'
+slug: going-spatial
+categories: []
+tags: []
+---
+
+```{r}
+library(ggmap)
+```
+
+
+```{r, include = FALSE}
+RawData <- readr::read_rds("C:/Users/handk/Documents/R/My_Website/Housing_Data.Rds")
+```
+
+```{r}
+get_geo_code <- function(location) {
+  gc()
+
+  Sys.sleep(1)
+  
+  tmaptools::geocode_OSM(location,
+                         as.data.frame = TRUE) %>% 
+    as_tibble()
+  
+}
+```
+
+
+```{r, eval = FALSE}
+library(tmaptools)
+library(tidyverse)
+
+
+
+df_Geolocation_V1 <- RawData %>% 
+  as_tibble() %>% 
+  distinct(Location, .keep_all = TRUE) %>% 
+  mutate(Location_pro = str_replace(Location, pattern = "\\(Kreis\\)", replacement = ""),
+         Location_pro = str_replace(Location_pro, pattern = "ä", replacement = "ae"),
+         Location_pro = str_replace(Location_pro, pattern = "ö", replacement = "oe"),
+         Location_pro = str_replace(Location_pro, pattern = "ü", replacement = "ue"),
+         Location_pro = str_replace(Location_pro, pattern = "ß", replacement = "ss"),
+         lat_lon = map(Location_pro, possibly(get_geo_code, NA)))
+
+```
+
+```{r, eval = FALSE}
+
+df_Geolocation_V2 <- df_Geolocation_V1 %>% 
+  filter(is.na(lat_lon)) %>% 
+  filter(str_count(Location_pro, ",") == 2) %>% 
+  mutate(Location_pro = str_extract(Location_pro, pattern = "(?<=,).*"),
+         lat_lon = map(Location_pro, possibly(get_geo_code, NA)))
+
+```
+
+```{r, eval = FALSE}
+df_Geolocation <- dplyr::union_all(df_Geolocation_V1 %>% 
+                                     filter(!is.na(lat_lon)),
+                                   df_Geolocation_V2)
+```
+
+```{r, include=FALSE, eval = FALSE}
+
+readr::write_rds(df_Geolocation_V1, "df_Geolocation_V1.Rds")
+
+readr::write_rds(all_result, "Geocode_final.Rds")
+
+```
+
+```{r, include=FALSE}
+df_Geolocation_V1 <- readr::read_rds("C:/Users/handk/Documents/R/My_Website/Geocode_V1.Rds")
+df_Geolocation_V2 <- readr::read_rds("C:/Users/handk/Documents/R/My_Website/Geocode_final.Rds")
+df_Geolocation <- readr::read_rds("C:/Users/handk/Documents/R/My_Website/Geocode_final.Rds")
+
+```
+
+
