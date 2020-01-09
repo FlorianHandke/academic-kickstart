@@ -32,8 +32,10 @@ projects: ''
 <p>For this we use <a href="https://shiny.rstudio.com/">R Shiny</a>. A library for creating webapps, dashboards and interactive documents.</p>
 <p>After that we will host the app via <a href="https://www.shinyapps.io/">shinyapps.io</a> and make it freely accessible for users. With Sshinyapps.io up to 5 webapps with an active runtime of 25 hours can be hosted in the freeware version. Since we don’t want to program a productive app that is to be used by a large number of users, this is completely sufficient.</p>
 <pre class="r"><code>library(shiny)</code></pre>
-<p>Shiny provides a wide variety of different input and output options. In addition, there are other packages available (e.g. <a href="https://rstudio.github.io/shinydashboard/">shinydashboard</a>, <a href="https://github.com/dreamRs/shinyWidgets">shinyWidgets</a>, …) with extended functionality or a nicer look, but we won’t use them in this context.</p>
-<p>Shiny apps are usually split in two: * The ui part defines the user interface of the app. * The server part defines the logic including various database queries, calculations etc.</p>
+<p>Shiny provides a wide variety of different input and output options. In addition, there are other packages available (e.g. <a href="https://rstudio.github.io/shinydashboard/">shinydashboard</a>, <a href="https://github.com/dreamRs/shinyWidgets">shinyWidgets</a>, …) with extended functionality or a nicer look, but we won’t use them in this context.</p>
+<p>Shiny apps are usually split in two:
+* The ui part defines the user interface of the app.
+* The server part defines the logic including various database queries, calculations etc.</p>
 <p>The use of cheatsheets is always a good practice. A <a href="https://shiny.rstudio.com/images/shiny-cheatsheet.pdf">cheatsheet</a> is also available for Shiny.</p>
 <div id="defining-the-ui" class="section level2">
 <h2>Defining the UI</h2>
