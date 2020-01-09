@@ -323,8 +323,6 @@ To visualize this, we plot the achieved placement on the x-axis and the end time
 
 It turns out that the time between the placements almost follows a certain linearity. In the case of men, the time difference between the individual places is smaller than in the case of women.
 
-Translated with www.DeepL.com/Translator
-
 ```{r}
 allover_results %>% 
   plot_ly(x = ~Place,
