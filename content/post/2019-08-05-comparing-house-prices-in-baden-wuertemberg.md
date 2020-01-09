@@ -40,7 +40,8 @@ To scrapn the data, we will use a few packages with useful functions:
 
 * **glue** to glue strings :)
 
-```{r, warning = FALSE, message = FALSE}
+
+```r
 library(rvest)
 library(tidyverse)
 library(glue)
@@ -55,15 +56,11 @@ To get the data I built a loop to scrape the data and a helper function to get t
 Due to inconsistent data we need a helper function (SplitIt). This function checks individual arguments and merges them into a tibble. Missing arguments are replaced by an NA.
 
 
-```{r, include=FALSE}
-
-url <- "https://www.immobilienscout24.de/Suche/S-T/P-{page}/Haus-Kauf/Baden-Wuerttemberg"
-
-```
 
 
-```{r helper functions, warning = FALSE, message = FALSE}
 
+
+```r
 ## Helper function
 ## Price, LivingArea, Rooms, and SiteArea are no necessary arguments. therefore we need to check if they are existant.
 
@@ -89,20 +86,17 @@ SplitIt <- function(string) {
                            NA) %>% str_replace("Grundstueck", ""))
   
 }
-
 ```
 
-```{r, include=FALSE}
-HousingData <- readr::read_rds("C:/Users/User/Documents/academic-kickstart/Housing_Data.Rds")
-```
+
 
 ## Executing the for loop
 
 The data is saved as a tibble for further processing. Then it can be passed to the helper function (SplitIt) via purrr::map(). The helper function then returns data as tibble. 
 
 
-```{r, warning = FALSE, message = FALSE, eval=FALSE}
 
+```r
 ## To get to our landing page we simulate our first page argument with 1
 
 page <- 1
@@ -160,17 +154,27 @@ for (i in seq_along(pagination)) {
     bind_rows(PageResult)
   
 }
-
 ```
-And our rsult looks like this. It conatains `r nrow(HousingData)` rows which equals the number of houses hosted on the portal
+And our rsult looks like this. It conatains 6025 rows which equals the number of houses hosted on the portal
 
-```{r}
+
+```r
 head(HousingData)
 ```
 
-```{r, include=FALSE, eval = FALSE}
-readr::write_rds(HousingData, "Housing_Data.Rds")
 ```
+## # A tibble: 6 x 6
+##   Title                 Location           Price  LivingArea Rooms SiteArea
+##   <chr>                 <chr>              <chr>  <chr>      <chr> <chr>   
+## 1 NEUSchönes 3-FH für ~ Ketsch, Rhein-Nec~ 699.0~ 276 m²     "10 " 480 m²  
+## 2 Schöne Doppelhaushäl~ Kehl, Ortenaukreis 399.0~ 110 m²     "4 "  299 m²  
+## 3 NEUIhr neues Wohnglü~ Sindelfingen, Böb~ 520.0~ 175 m²     "7 "  238 m²  
+## 4 NEUElegantes und Mod~ Untertürkheim, St~ 998.0~ 140 m²     "5,5~ 397 m²  
+## 5 NEUNeu bauen oder sa~ Bad Cannstatt, St~ 520.0~ 105 m²     "6 "  307 m²  
+## 6 NEUKernen im Remstal~ Hölderlinstraße 7~ 1.190~ 287,86 m²  "12,~ 785 m²
+```
+
+
 
 The data looks great and I am curious to see what information and insights we can generate from it.
 
